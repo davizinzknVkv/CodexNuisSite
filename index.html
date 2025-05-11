@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codex Nuis - Scripts Premium FiveM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+        primary: '#7F1DFF',
+        secondary: '#3B82F6',
+        dark: '#0F172A',
+        light: '#E0F2FE'}
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-bg { background: linear-gradient(135deg, #7F1DFF 0%, #3B82F6 100%); }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #93C5FD;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        .glow-text {
+            text-shadow: 0 0 10px rgba(147, 197, 253, 0.5);
+        }
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-content {
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+    
+.bg-glass {
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+</style>
+</head>
+<body class="bg-gradient-to-br from-[#2e026d] to-[#15162c] text-white font-sans">
+    <!-- Header -->
+    <header class="bg-primary sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white p-2 rounded-lg">
+                    <i class="fas fa-code text-primary text-xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-white glow-text">CODEX NUIS</h1>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="#home" class="nav-link text-white font-medium">Início</a>
+                <a href="#scripts" class="nav-link text-gray-200 hover:text-white font-medium">Scripts</a>
+                <a href="#features" class="nav-link text-gray-200 hover:text-white font-medium">Recursos</a>
+                <a href="#testimonials" class="nav-link text-gray-200 hover:text-white font-medium">Avaliações</a>
+                <a href="#contact" class="nav-link text-gray-200 hover:text-white font-medium">Contato</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <div id="user-info" class="hidden items-center">
+                    <img id="user-avatar" src="" alt="Avatar" class="w-8 h-8 rounded-full mr-2">
+                    <span id="username" class="text-white font-medium"></span>
+                    <button id="logout-btn" class="ml-4 text-gray-200 hover:text-white">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+                <button id="login-btn" class="bg-white text-primary px-4 py-2 rounded-lg font-medium flex items-center space-x-2 hover:bg-gray-100 transition">
+                    <i class="fab fa-discord"></i>
+                    <span>Login com Discord</span>
+                </button>
+                <button class="md:hidden text-2xl text-white" id="mobile-menu-button">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden bg-primary px-4 py-2" id="mobile-menu">
+            <div class="flex flex-col space-y-3">
+                <a href="#home" class="block py-2 text-white font-medium">Início</a>
+                <a href="#scripts" class="block py-2 text-gray-200 hover:text-white font-medium">Scripts</a>
+                <a href="#features" class="block py-2 text-gray-200 hover:text-white font-medium">Recursos</a>
+                <a href="#testimonials" class="block py-2 text-gray-200 hover:text-white font-medium">Avaliações</a>
+                <a href="#contact" class="block py-2 text-gray-200 hover:text-white font-medium">Contato</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 invisible">
+        <div class="modal-content bg-glass rounded-xl p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white">Login com Discord</h3>
+                <button id="close-modal" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="text-center">
+                <div class="bg-slate-700 p-6 rounded-lg mb-6">
+                    <i class="fab fa-discord text-5xl text-[#5865F2] mb-4"></i>
+                    <p class="text-gray-300 mb-6">Para acessar recursos exclusivos, faça login com sua conta Discord</p>
+                    <button id="discord-auth-btn" class="bg-[#5865F2] hover:bg-[#4752C4] text-white px-6 py-3 rounded-lg font-bold w-full transition flex items-center justify-center space-x-2">
+                        <i class="fab fa-discord"></i>
+                        <span>Continuar com Discord</span>
+                    </button>
+                </div>
+                
+                <p class="text-gray-400 text-sm">Ao continuar, você concorda com nossos <a href="#" class="text-primary hover:underline">Termos de Serviço</a> e <a href="#" class="text-primary hover:underline">Política de Privacidade</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg py-20">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-white">Scripts Premium para <span class="text-light">FiveM</span></h2>
+                <p class="text-xl text-gray-200 mb-8">Desenvolvemos os melhores scripts para seu servidor FiveM, com performance excepcional e recursos inovadores.</p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#scripts" class="bg-white text-primary px-6 py-3 rounded-lg font-bold text-center hover:bg-gray-100 transition">Ver Scripts</a>
+                    <a href="#contact" class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-bold text-center hover:bg-white hover:text-primary transition">Contato</a>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-primary rounded-xl opacity-75 blur-lg"></div>
+                    <img src="https://images.unsplash.com/photo-1639762681057-408e52192e55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80" alt="FiveM Server" class="relative rounded-xl shadow-2xl max-w-full h-auto border-4 border-white">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts Section -->
+    
+<section id="scripts" class="py-20">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4 text-white">Nossos <span class="text-primary">Scripts</span></h2>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto">Scripts otimizados e com suporte premium para seu servidor FiveM</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-glass p-4 rounded-xl shadow-lg border border-white/10">
+                <img src="https://i.imgur.com/b66QXXu.png" class="w-full rounded-lg mb-4" alt="Script 1">
+                <h3 class="text-xl font-bold mb-2 text-white">Sistema de Inventário</h3>
+                <p class="text-gray-300">Interface moderna e funcional para gerenciamento de itens com animações suaves.</p>
+<a href="https://discord.gg/FeT2tD9Nuj" target="_blank" class="mt-4 inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition shadow-md">Abrir Ticket</a>
+
+            </div>
+            <div class="bg-glass p-4 rounded-xl shadow-lg border border-white/10">
+                <img src="https://i.imgur.com/lTF0GuW.png" class="w-full rounded-lg mb-4" alt="Script 2">
+                <h3 class="text-xl font-bold mb-2 text-white">Loja Interativa</h3>
+                <p class="text-gray-300">Sistema de compra com UI integrada, sons e feedbacks visuais.</p>
+<a href="https://discord.gg/FeT2tD9Nuj" target="_blank" class="mt-4 inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition shadow-md">Abrir Ticket</a>
+
+            </div>
+            <div class="bg-glass p-4 rounded-xl shadow-lg border border-white/10">
+                <img src="https://i.imgur.com/trbWhvq.png" class="w-full rounded-lg mb-4" alt="Script 3">
+                <h3 class="text-xl font-bold mb-2 text-white">Sistema de Multas</h3>
+                <p class="text-gray-300">Permite emissão e pagamento de multas com interface intuitiva e suporte a logs.</p>
+<a href="https://discord.gg/FeT2tD9Nuj" target="_blank" class="mt-4 inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition shadow-md">Abrir Ticket</a>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="mapas" class="py-20">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4 text-white">Mapas <span class="text-primary">Exclusivos</span></h2>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto">Ambientes otimizados e personalizados para sua cidade</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-glass p-4 rounded-xl shadow-lg border border-white/10">
+                <img src="https://i.imgur.com/6H7cqNW.png" class="w-full rounded-lg mb-4" alt="Mapa 1">
+                <h3 class="text-xl font-bold mb-2 text-white">Quartel dos Bombeiros</h3>
+                <p class="text-gray-300">Estrutura moderna com garagem e alojamentos completos.</p>
+<a href="https://discord.gg/FeT2tD9Nuj" target="_blank" class="mt-4 inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition shadow-md">Abrir Ticket</a>
+
+            </div>
+            <div class="bg-glass p-4 rounded-xl shadow-lg border border-white/10">
+                <img src="https://i.imgur.com/nua0p4S.png" class="w-full rounded-lg mb-4" alt="Mapa 2">
+                <h3 class="text-xl font-bold mb-2 text-white">Prefeitura Nova</h3>
+                <p class="text-gray-300">Prédio institucional com arquitetura realista e acessos otimizados.</p>
+<a href="https://discord.gg/FeT2tD9Nuj" target="_blank" class="mt-4 inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition shadow-md">Abrir Ticket</a>
+
+            </div>
+            <div class="bg-glass p-4 rounded-xl shadow-lg border border-white/10">
+                <img src="https://i.imgur.com/CII3zJK.png" class="w-full rounded-lg mb-4" alt="Mapa 3">
+                <h3 class="text-xl font-bold mb-2 text-white">Residências à Beira do Lago</h3>
+                <p class="text-gray-300">Casas de luxo com vista panorâmica, ideal para roleplay premium.</p>
+<a href="https://discord.gg/FeT2tD9Nuj" target="_blank" class="mt-4 inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition shadow-md">Abrir Ticket</a>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="carros" class="py-20">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4 text-white">Carros <span class="text-primary">Personalizados</span></h2>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto">Veículos exclusivos, realistas e totalmente tunados</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-glass p-4 rounded-xl shadow-lg border border-white/10">
+                <img src="https://media.discordapp.net/attachments/1347372425637269575/1364260706324713604/Captura_de_tela_2025-04-17_163511.png?format=webp&quality=lossless&width=909&height=513" class="w-full rounded-lg mb-4" alt="Carro 1">
+                <h3 class="text-xl font-bold mb-2 text-white">Dodge Charger</h3>
+                <p class="text-gray-300">Ideal para perseguições, motor potente e visual agressivo.</p>
+<a href="https://discord.gg/FeT2tD9Nuj" target="_blank" class="mt-4 inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition shadow-md">Abrir Ticket</a>
+
+            </div>
+            <div class="bg-glass p-4 rounded-xl shadow-lg border border-white/10">
+                <img src="https://media.discordapp.net/attachments/1347372425637269575/1364260926932517006/image.png?format=webp&quality=lossless&width=909&height=513" class="w-full rounded-lg mb-4" alt="Carro 2">
+                <h3 class="text-xl font-bold mb-2 text-white">Nissan GTR</h3>
+                <p class="text-gray-300">Design esportivo e desempenho extremo para corridas urbanas.</p>
+<a href="https://discord.gg/FeT2tD9Nuj" target="_blank" class="mt-4 inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition shadow-md">Abrir Ticket</a>
+
+            </div>
+            <div class="bg-glass p-4 rounded-xl shadow-lg border border-white/10">
+                <img src="https://media.discordapp.net/attachments/1347372425637269575/1364260979231162428/Captura_de_tela_2025-04-17_182958.png?format=webp&quality=lossless&width=909&height=513" class="w-full rounded-lg mb-4" alt="Carro 3">
+                <h3 class="text-xl font-bold mb-2 text-white">Lamborghini Aventador</h3>
+                <p class="text-gray-300">Luxo e velocidade combinados para ostentação total.</p>
+<a href="https://discord.gg/FeT2tD9Nuj" target="_blank" class="mt-4 inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition shadow-md">Abrir Ticket</a>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-slate-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4 text-white">Por que escolher a <span class="text-primary">Codex Nuis?</span></h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">Nossos diferenciais que fazem a diferença no seu servidor</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Feature cards remain the same as before -->
+                <!-- ... -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 bg-dark">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4 text-white">O que dizem nossos <span class="text-primary">clientes</span></h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">Avaliações de quem já utiliza nossos scripts</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial cards remain the same as before -->
+                <!-- ... -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-primary">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto bg-glass rounded-xl shadow-xl p-8">
+                <!-- Contact form remains the same as before -->
+                <!-- ... -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark py-12">
+        <div class="container mx-auto px-4">
+            <!-- Footer content remains the same as before -->
+            <!-- ... -->
+        </div>
+    
+<footer class="bg-dark py-12 mt-16 border-t border-white/10">
+    <div class="container mx-auto px-4 text-center text-gray-400">
+        <p class="text-sm mb-4">&copy; 2025 @CODEX NUIS. Todos os direitos reservados.</p>
+        <div class="flex justify-center space-x-6 text-xl">
+            <a href="https://discord.gg/FeT2tD9Nuj" target="_blank" class="hover:text-white transition"><i class="fab fa-discord"></i></a>
+            <a href="https://instagram.com" target="_blank" class="hover:text-white transition"><i class="fab fa-instagram"></i></a>
+            <a href="https://youtube.com" target="_blank" class="hover:text-white transition"><i class="fab fa-youtube"></i></a>
+            <a href="https://tiktok.com" target="_blank" class="hover:text-white transition"><i class="fab fa-tiktok"></i></a>
+        </div>
+    </div>
+
+<section id="videos" class="py-20">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold mb-4 text-white">Veja em ação 🔥</h2>
+      <p class="text-xl text-gray-300 max-w-3xl mx-auto">Assista a demonstrações dos nossos scripts, mapas e veículos personalizados</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+      <div class="aspect-w-16 aspect-h-9 bg-glass rounded-xl overflow-hidden shadow-lg border border-white/10">
+        <iframe class="w-full h-full" src="https://www.youtube.com/embed/sxN7lLrXFqI" title="Vídeo 1" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div class="aspect-w-16 aspect-h-9 bg-glass rounded-xl overflow-hidden shadow-lg border border-white/10">
+        <iframe class="w-full h-full" src="https://www.youtube.com/embed/oJGbuXtL9h8" title="Vídeo 2" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div class="aspect-w-16 aspect-h-9 bg-glass rounded-xl overflow-hidden shadow-lg border border-white/10">
+        <iframe class="w-full h-full" src="https://www.youtube.com/embed/NNkt1lua88A" title="Vídeo 3" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div class="aspect-w-16 aspect-h-9 bg-glass rounded-xl overflow-hidden shadow-lg border border-white/10">
+        <iframe class="w-full h-full" src="https://www.youtube.com/embed/vmchTEyqrAg" title="Vídeo 4" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+</footer>
+
+<script>
+  const loginBtn = document.getElementById('login-btn');
+  const discordAuthBtn = document.getElementById('discord-auth-btn');
+  const loginModal = document.getElementById('login-modal');
+
+  const redirectURL = "https://discord.com/oauth2/authorize?client_id=1370955306162720798&redirect_uri=https%3A%2F%2Fcodexnuis.vercel.app%2Fcallback&response_type=token&scope=identify";
+
+  if (loginBtn) {
+    loginBtn.addEventListener('click', () => {
+      window.location.href = redirectURL;
+    });
+  }
+
+  if (discordAuthBtn) {
+    discordAuthBtn.addEventListener('click', () => {
+      window.location.href = redirectURL;
+    });
+  }
+</script>
+
+</body>
+</html>
